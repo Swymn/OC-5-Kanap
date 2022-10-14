@@ -1,27 +1,15 @@
-import { URI, fetchAPI } from "./utils/fetchApi.js";
+import { getProducts } from "./utils/fetchApi.js";
 
 /**
- * This function is used to fetch all the products in the API.
- *
- * @return { Promise<{
- *      altTxt: string,
- *      colors: string[],
- *      description: string,
- *      imageUrl: string,
- *      name: string,
- *      price: number,
- *      _id: string}[]>
- *  } - The products Array.
+ * This function is used to render all the products.
  */
-const getProducts = async () => fetchAPI(`${URI}products`);
-
 const renderProducts = () => {
     getProducts().then((products) => {
         const container = document.getElementById('items');
         let html = '';
 
         products.forEach((product) => {
-            const segment = `
+            html += `
                 <a href="./product.html?id=${product._id}">
                     <article>
                       <img src="${product.imageUrl}" alt=${product.altTxt}>
@@ -30,7 +18,6 @@ const renderProducts = () => {
                     </article>
                 </a>
             `
-            html += segment;
         })
 
         container.innerHTML = html;

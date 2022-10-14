@@ -1,4 +1,4 @@
-import { URI, fetchAPI } from "./utils/fetchApi.js";
+import { getProduct } from "./utils/fetchApi.js";
 
 /**
  * This function is used to get the product id from the url.
@@ -10,18 +10,11 @@ const getIdFromURL = () => {
     return url.searchParams.get('id');
 }
 
-const getProduct = () => {
-
-    const id = getIdFromURL();
-
-    if (typeof id !== "string") throw new Error("Id must be a string.");
-    if (id.length === 0) throw new Error("Id not found");
-
-    return fetchAPI(`${URI}products/${id}`);
-}
-
+/**
+ * This function is used to render a product.
+ */
 const renderProduct = () => {
-    getProduct().then((product) => {
+    getProduct(getIdFromURL()).then((product) => {
 
         document.title = product.name;
 
@@ -37,6 +30,11 @@ const renderProduct = () => {
     })
 }
 
+/**
+ * This event is triggered when the button "Ajouter au panier" is triggered.
+ *
+ * @type {onclick}
+ */
 document.getElementById('addToCart').onclick = ((ev) => {
     const cart = window.localStorage;
     const id = getIdFromURL();
@@ -60,10 +58,4 @@ document.getElementById('addToCart').onclick = ((ev) => {
     cart.setItem((cart.length).toString(), JSON.stringify(currentItem));
 })
 
-const reset = () => {
-    window.localStorage.clear();
-}
-
-/*reset();*/
 renderProduct();
-console.log('storage', window.localStorage);
