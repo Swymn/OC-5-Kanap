@@ -27,6 +27,26 @@ export const fetchAPI = async (url) => {
     }
 }
 
+export const pushApi = async (url, data) => {
+
+    if (typeof url !== "string") throw new Error("The url must be a string.");
+    if (typeof data !== "object") throw new Error("The data must be an object.");
+
+    try {
+        let result = await fetch(url, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        return await result.json();
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
 /**
  * This function is used to fetch all the products in the API.
  *

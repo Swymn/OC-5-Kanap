@@ -1,4 +1,4 @@
-import {CART_NAME, getProduct} from "./utils/fetchApi.js";
+import {CART_NAME, getProduct, pushApi, URI} from "./utils/fetchApi.js";
 
 /**
  * This function is used to create the image of a product.
@@ -213,25 +213,22 @@ const renderCart = () => {
  * Its called when the user change the quantity of an item in the cart.
  */
 document.addEventListener('change', (event) => {
-    if (event.target.classList.contains('itemQuantity')) {
+    if (!(event.target.classList.contains('itemQuantity'))) return null;
 
-        const id = event.target.parentElement.parentElement.parentElement.parentElement.dataset.id;
-        const cart = getCart();
+    const id = event.target.parentElement.parentElement.parentElement.parentElement.dataset.id;
+    const cart = getCart();
 
-        for (let i = 0; i < cart.length; i++) {
-            const product = cart[i];
+    for (let i = 0; i < cart.length; i++) {
+        const product = cart[i];
 
-            if (product.id === id) {
-                cart[i].quantity = event.target.value;
-                break;
-            }
+        if (product.id === id) {
+            cart[i].quantity = event.target.value;
+            break;
         }
-
-        console.log('cart', cart);
-
-        updateCart(cart);
-        renderCart();
     }
+
+    updateCart(cart);
+    renderCart();
 });
 
 /**
@@ -240,23 +237,67 @@ document.addEventListener('change', (event) => {
  * Basically, it removes the item from the cart. It calls when the user clicks on the delete button.
  */
 document.addEventListener('click', (event) => {
-    if (event.target.classList.contains('deleteItem')) {
+    if (!(event.target.classList.contains('deleteItem'))) return null;
 
-        const cart = getCart();
-        const id = event.target.parentElement.parentElement.parentElement.parentElement.dataset.id;
+    const cart = getCart();
+    const id = event.target.parentElement.parentElement.parentElement.parentElement.dataset.id;
 
-        for (let i = 0; i < cart.length; i++) {
-            const product = cart[i];
+    for (let i = 0; i < cart.length; i++) {
+        const product = cart[i];
 
-            if (product.id === id) {
-                removeItem(cart, i);
-                break;
-            }
+        if (product.id === id) {
+            removeItem(cart, i);
+            break;
         }
-
-        updateCart(cart);
-        renderCart();
     }
+
+    updateCart(cart);
+    renderCart();
+});
+
+document.addEventListener('submit', (event) => {
+    if (!(event.target.classList.contains('cart__order__form'))) return null;
+
+    event.preventDefault();
+
+    const firstName = document.getElementById('firstName').value;
+    const lastName = document.getElementById('lastName').value;
+    const address = document.getElementById('address').value;
+    const city = document.getElementById('city').value;
+    const email = document.getElementById('email').value;
+
+    const verif = (regex, value, id, error) => {
+        if (!(regex.test(value))) {
+            document.getElementById(id).textContent = error;
+            return false;
+        }
+        return true;
+    }
+
+    const fnameBool = verif(new RegExp(/^[a-zA-Z]{2,20}$/), firstName, "firstNameErrorMsg", "Le prénom doit contenir entre 2 et 20 caractères");
+    const lnameBool = verif(new RegExp(/^[a-zA-Z]{2,20}$/), lastName, "lastNameErrorMsg", "Le nom doit contenir entre 2 et 20 caractères");
+    const addressBool = verif(new RegExp(/^[0-9]{1,4} [a-zA-Z]{2,20}$/), address, "addressErrorMsg", "L'adresse doit être sous la forme 'numéro' 'nom de la voie'");
+    const cityBool = verif(new RegExp(/^[a-zA-Z]{2,20}$/), city, "cityErrorMsg", "La ville doit contenir entre 2 et 20 caractères");
+    const emailBool = verif(new RegExp(/^[A-Za-z0-9._%+-]+@([A-Za-z0-9._-]+\.)+[\w-]{2,}$/, "g"), email, "emailErrorMsg", "L'email doit être sous la forme 'texte'@'texte'.'texte'.'texte'");
+
+    /*if (fnameBool || lnameBool || addressBool || cityBool || emailBool) {
+        return null;
+    }*/
+
+    const contact = {
+        firstName,
+        lastName,
+        address,
+        city,
+        email,
+    }
+
+    console.log('contact', contact);
+
+    pushApi(`${URI}order`, { contact, products: getCart().map((product) => product.id) }).then((response) => {
+        console.log('response', response);
+        window.location.href = 'confirmation.html?orderId=' + response.orderId;
+    });
 });
 
 renderCart();
