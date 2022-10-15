@@ -13,9 +13,6 @@ const renderCart = () => {
         const key = localStorage.key(i);
         const product = JSON.parse(localStorage.getItem(key));
 
-        console.log('product', product);
-        console.log('product', product.id);
-
         getProduct(product.id).then((currentProduct) => {
             total += product.quantity * currentProduct.price;
             quantity += Number.parseInt(product.quantity);
@@ -91,14 +88,8 @@ document.addEventListener('click', (event) => {
             const key = localStorage.key(i);
             const product = JSON.parse(localStorage.getItem(key));
 
-            console.log('product', product);
-
             if (product.id === id) {
-                console.log('product', product);
-                console.log('id', id);
                 localStorage.removeItem(key);
-
-                console.log('localStorage', localStorage);
                 break;
             }
         }
