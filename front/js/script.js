@@ -8,21 +8,33 @@ import { getProducts } from "./utils/fetchApi.js";
 const renderProducts = () => {
     getProducts().then((products) => {
         const container = document.getElementById('items');
-        let html = '';
 
         products.forEach((product) => {
-            html += `
-                <a href="./product.html?id=${product._id}">
-                    <article>
-                      <img src="${product.imageUrl}" alt=${product.altTxt}>
-                      <h3 class="productName">${product.name}</h3>
-                      <p class="productDescription">${product.description}</p>
-                    </article>
-                </a>
-            `
-        })
 
-        container.innerHTML = html;
+            const img = document.createElement('img');
+            img.src = product.imageUrl;
+            img.alt = product.altTxt;
+
+            const name = document.createElement('h3');
+            name.classList.add('productName');
+            name.textContent = product.name;
+
+            const description = document.createElement('p');
+            description.classList.add('productDescription');
+            description.textContent = product.description;
+
+            const article = document.createElement('article');
+            article.appendChild(img);
+            article.appendChild(name);
+            article.appendChild(description);
+
+            const link = document.createElement('a');
+            link.href = `product.html?id=${product._id}`;
+
+            link.appendChild(article);
+
+            container.appendChild(link);
+        })
     });
 }
 

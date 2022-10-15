@@ -17,16 +17,22 @@ const renderProduct = () => {
 
         document.title = product.name;
 
-        // @TODO:
-        document.getElementsByClassName('item__img')[0].innerHTML = `
-            <img src="${product.imageUrl}" alt="${product.altTxt}">
-        `
+        const img = document.createElement('img');
+        img.src = product.imageUrl;
+        img.alt = product.altTxt;
 
-        document.getElementById('title').innerHTML = `${product.name}`;
-        document.getElementById('price').innerHTML = `${product.price}`;
-        document.getElementById('description').innerHTML = `${product.description}`;
+        document.getElementsByClassName('item__img')[0].appendChild(img);
 
-        document.getElementById('colors').innerHTML = product.colors.map((color) => `<option value="${color}">${color}</option>`).toString();
+        document.getElementById('title').textContent = `${product.name}`;
+        document.getElementById('price').textContent = `${product.price}`;
+        document.getElementById('description').textContent = `${product.description}`;
+
+        for (const color of product.colors) {
+            const option = document.createElement('option');
+            option.value = color;
+            option.textContent = color;
+            document.getElementById('colors').appendChild(option);
+        }
     })
 }
 
