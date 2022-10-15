@@ -2,6 +2,8 @@ import { getProducts } from "./utils/fetchApi.js";
 
 /**
  * This function is used to render all the products.
+ *
+ * Basically it take all the product into the API, and render it into the 'items' container.
  */
 const renderProducts = () => {
     getProducts().then((products) => {

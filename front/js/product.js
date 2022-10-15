@@ -3,12 +3,11 @@ import { getProduct } from "./utils/fetchApi.js";
 /**
  * This function is used to get the product id from the url.
  *
+ * Basically it use the URL object to parse the url and get the param 'id'.
+ *
  * @return {string} - The current id.
  */
-const getIdFromURL = () => {
-    const url = new URL(window.location.href);
-    return url.searchParams.get('id');
-}
+const getIdFromURL = () => new URL(window.location.href).searchParams.get('id');
 
 /**
  * This function is used to render a product.
@@ -32,6 +31,10 @@ const renderProduct = () => {
 
 /**
  * This event is triggered when the button "Ajouter au panier" is triggered.
+ *
+ * Basically it will take all the data in the page and put it into the localStorage.
+ * But if the object is already inside, and he has the same color, we increase the quantity.
+ * Otherwise, we add a new one.
  *
  * @type {onclick}
  */
