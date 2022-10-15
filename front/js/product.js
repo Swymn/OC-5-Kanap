@@ -1,4 +1,4 @@
-import { getProduct } from "./utils/fetchApi.js";
+import {CART_NAME, getProduct} from "./utils/fetchApi.js";
 
 /**
  * This function is used to get the product id from the url.
@@ -17,6 +17,7 @@ const renderProduct = () => {
 
         document.title = product.name;
 
+        // @TODO:
         document.getElementsByClassName('item__img')[0].innerHTML = `
             <img src="${product.imageUrl}" alt="${product.altTxt}">
         `
@@ -39,26 +40,33 @@ const renderProduct = () => {
  * @type {onclick}
  */
 document.getElementById('addToCart').onclick = ((ev) => {
-    const cart = window.localStorage;
+    const cart = localStorage;
     const id = getIdFromURL();
     const currentColor = document.getElementById('colors').value;
     let currentQuantity = document.getElementById('quantity').value;
 
-    if (currentQuantity <= 0) currentQuantity = 1;
+    let cartArray = JSON.parse(cart.getItem(CART_NAME));
 
-    let currentItem = JSON.parse(cart.getItem(id));
-
-    if (currentItem && currentItem.id === id && currentItem.color === currentColor) {
-        currentItem.quantity += 1;
-    } else {
-        currentItem = {
-            id: id,
-            quantity: currentQuantity,
-            color: currentColor,
-        }
+    const productToAdd = {
+        id: id,
+        color: currentColor,
+        quantity: currentQuantity
     }
 
-    cart.setItem((cart.length).toString(), JSON.stringify(currentItem));
+    if (!cartArray) {
+        localStorage.setItem(CART_NAME, JSON.stringify([productToAdd]));
+        return null;
+    }
+    cartArray.forEach((product) => {
+        if (product.id === id && product.color === currentColor) {
+            product.quantity = parseInt(product.quantity) + parseInt(currentQuantity);
+            cartArray.push(product);
+        } else {
+            cartArray.push(productToAdd);
+        }
+    });
+
+    cart.setItem(CART_NAME, JSON.stringify(cartArray));
 })
 
 renderProduct();

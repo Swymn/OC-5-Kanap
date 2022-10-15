@@ -1,4 +1,5 @@
 export const URI = "http://localhost:3000/api/";
+export const CART_NAME = "cart_products";
 
 /**
  * This function is used to fetch any endpoint of the API.
